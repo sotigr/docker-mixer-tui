@@ -3,17 +3,17 @@
 try:
     import yaml
 except ImportError:
-    print("The yaml package is missing, try to install with 'pip3 install yaml'")
+    print("The yaml package is missing, try to install with 'pip install yaml' or 'pip install pyyaml'")
     exit()
 try:
     import textual       
 except ImportError:
-    print("The textual package is missing, try to install with 'pip3 install textual==0.30.0'")
+    print("The textual package is missing, try to install with 'pip install textual==0.30.0'")
     exit()
 try:
     import pathlib       
 except ImportError:
-    print("The pathlib package is missing, try to install with 'pip3 install pathlib'")
+    print("The pathlib package is missing, try to install with 'pip install pathlib'")
     exit()
 
 from textual.app import App, ComposeResult
