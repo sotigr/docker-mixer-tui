@@ -8,7 +8,7 @@ except ImportError:
 try:
     import textual       
 except ImportError:
-    print("The textual package is missing, try to install with 'pip3 install textual'")
+    print("The textual package is missing, try to install with 'pip3 install textual==0.30.0'")
     exit()
 try:
     import pathlib       
@@ -20,8 +20,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, VerticalScroll, Container, ScrollableContainer
 from textual.binding import Binding
 from textual.widgets import Button, ContentSwitcher,Input, LoadingIndicator, Checkbox, Footer, Label, Static, OptionList, DirectoryTree
-from textual.widgets.option_list import Option 
-import subprocess
+from textual.widgets.option_list import Option  
 import sys
 import json
 import yaml 
@@ -225,15 +224,8 @@ class Manager(App[None]):
             self.env_list_selected_id = event.option_id 
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        if event.button.id == "build_conf_btn":
-     
-            self.set_loading(True)
-            result = subprocess.run(['/bin/bash', '-c', "node docker-compose-mixer/build-compose.js"], stdout=subprocess.PIPE)
-            self.query_one("#output", Static).update(result.stdout.decode('utf-8') + "\n Check docker-compose.yml")
-            self.set_loading(False)
-            
-
-        elif event.button.id == "add_yaml_btn":
+        
+        if event.button.id == "add_yaml_btn":
             self.query_one("#yaml_switcher", ContentSwitcher).current = "yaml_select_view"  
         elif  event.button.id == "cancel_yaml_file":
             self.query_one("#yaml_switcher", ContentSwitcher).current = "yaml_view"
@@ -318,14 +310,12 @@ class Manager(App[None]):
             f.close() 
             return ml["services"]
         
-        def clear_lists():
-            self.query_one("#yaml_list", OptionList).clear_options()
-            self.query_one("#list_disabled", OptionList).clear_options()
-            self.query_one("#disabled_services", OptionList).clear_options()
-            self.query_one("#env_file_list", OptionList).clear_options()
-            self.query_one("#log_items_container", ScrollableContainer).remove_children()
-
-        clear_lists()
+        self.query_one("#yaml_list", OptionList).clear_options()
+        self.query_one("#list_disabled", OptionList).clear_options()
+        self.query_one("#disabled_services", OptionList).clear_options()
+        self.query_one("#env_file_list", OptionList).clear_options()
+        self.query_one("#log_items_container", ScrollableContainer).remove_children()
+ 
         services = {}
         f = open("config.json")
         config = json.load(f)
@@ -340,7 +330,7 @@ class Manager(App[None]):
             lst.add_option(Option(path, id=path))  
             
         for path in config["configs"]:
-            lst = self.query_one("#yaml_list", OptionList) 
+            lst = self.query_one("#yaml_list", OptionList)  
             lst.add_option(Option(path, id=path)) 
             services = {**services, **get_services(path)}  
             
