@@ -407,8 +407,10 @@ class Manager(App[None]):
                         service["build"]["context"] = "./" + str(Path(os.path.dirname(c)).joinpath(service["build"]["context"]))
                     elif isinstance(service["build"], str):
                         service["build"] ="./" + str(Path(os.path.dirname(c)).joinpath(service["build"]))
-                if "volumes" in service: 
-                        service["volumes"] = [ "./" + str(Path(os.path.dirname(c)).joinpath(v)) for v in service["volumes"] ]
+                if "volumes" in service:  
+                    for i, v in enumerate(service["volumes"]):
+                        if not v.startswith("$"):
+                            service["volumes"][i] = "./" + str(Path(os.path.dirname(c)).joinpath(v))  
                 if name in outObject["services"]:
                     print("Error: Duplicate service named '" + name + "' found. All services must have a unique name.")
                     exit(-1)
